@@ -1,0 +1,7 @@
+.DS_Store
+
+__pycache__
+/handlers/__pycache__
+/shared/__pycache__
+
+bot_token.py
