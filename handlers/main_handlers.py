@@ -34,7 +34,6 @@ def handler_new_member(message):
       .format(user_name),
     parse_mode='html'
   )
-  send_image(message)
   send_sticker(message)
 
 @bot.message_handler(commands=['загугли'])
