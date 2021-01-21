@@ -47,7 +47,7 @@ def send_google_resp(message):
     send_sticker(message, 'stickers/google_fail_01.tgs')
   bot.send_message(message.chat.id, '<i>{0}</i>'.format(resp), parse_mode='html')
 
-@bot.message_handler(commands=['стикер'])
+@bot.message_handler(commands=['стикер', 'sticker'])
 def send_sticker(message, path='stickers/hello_01.tgs'):
   sticker = open(path, 'rb')
   bot.send_sticker(message.chat.id, sticker)
@@ -84,6 +84,12 @@ def send_audio(message, path='audio/modem.mp3'):
       bot.send_audio(message.chat.id, audio)
   except:
     bot.send_message(message.chat.id, 'пиип... пииип...')
+
+@bot.message_handler(commands=['умри', 'kill'])
+def kill_bot(message):
+  bot.send_message(message.chat.id, 'Этот мир жесток. Умираю.\n*умер*')
+  send_sticker(message, 'stickers/strange_01.tgs')
+  raise IOError("Вызвана смерть бота.")
 
 @bot.message_handler()
 def handler_message(message):
