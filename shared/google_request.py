@@ -9,6 +9,7 @@ class GoogleRequest:
 
   def find(self, phrase):
     req = phrase.replace(' ', '+')
+    res = 'Ошибка поиска.'
     google_req = 'https://www.google.com/search?sxsrf=ALeKk01ZA2k6IK85yDRhcN2Ovn-yI3_SJg%3A1588929244654&ei=3CK1Xpe3J7GLmwW4_pDoBA&q={0}+это&oq={0}+это&gs_lcp=CgZwc3ktYWIQAzICCAAyBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB46BAgAEEc6BAgjECc6BQgAEIMBOgcIABCDARBDOgQIABBDOgcIIxDqAhAnUNK-AVjT6QFggOwBaAJwAXgAgAGiAYgBhRCSAQQwLjE2mAEAoAEBqgEHZ3dzLXdperABCg&sclient=psy-ab&ved=0ahUKEwiXlc3Z9qPpAhWxxaYKHTg_BE0Q4dUDCAw&uact=5'.format(req)
 
     full_page = requests.get(google_req, headers=self.headers)
@@ -16,6 +17,13 @@ class GoogleRequest:
 
     convert = soup.findAll("div", {"jscontroller": "DGEKAc", "class": "kno-rdesc", "jsaction": "seM7Qe:c0XUbe;Iigoee:c0XUbe;rcuQ6b:npT2md"})
 
-    return convert[0].div.span.text
+    span_elements = convert[0].div.findAll('span')
+
+    if len(span_elements) > 3:
+      res = span_elements[2].text
+    elif len(span_elements):
+      res = span_elements[0].text
+
+    return res
 
 googleRequest = GoogleRequest()

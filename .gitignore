@@ -5,3 +5,4 @@ __pycache__
 /shared/__pycache__
 
 bot_token.py
+dev_config.py

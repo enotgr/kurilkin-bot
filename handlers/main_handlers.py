@@ -1,7 +1,9 @@
 import random
 import os.path
+import json
 from misc import bot
 from shared import google_request
+from dev_config import ROOTS, IGNORE_CHATS_IDS
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -43,7 +45,7 @@ def send_google_resp(message):
   try:
     resp = google_request.googleRequest.find(req)
   except:
-    resp = 'Проблемы с доступом к джойказино...'
+    resp = 'Я ничего не нашёл.'
     send_sticker(message, 'stickers/google_fail_01.tgs')
   bot.send_message(message.chat.id, '<i>{0}</i>'.format(resp), parse_mode='html')
 
@@ -91,6 +93,29 @@ def kill_bot(message):
   send_sticker(message, 'stickers/strange_01.tgs')
   raise IOError("Вызвана смерть бота.")
 
+# dev function
+@bot.message_handler(commands=['chatId'])
+def send_chat_info(message):
+  from_user_id = message.from_user.id
+  chat_title = message.chat.title
+
+  if from_user_id in ROOTS:
+    bot.send_message(from_user_id, '<b>Инфо:</b>\n<b>title:</b> <i>{0}</i>\n<b>id:</b> <i>{1}</i>'.format(chat_title, message.chat.id), parse_mode='html')
+    bot.send_message(message.chat.id, 'Ответил в личку.')
+  else:
+    deny_access(message)
+
+# dev function
+@bot.message_handler(commands=['chatInfo'])
+def send_json_chat_message(message):
+  from_user_id = message.from_user.id
+
+  if from_user_id in ROOTS:
+    bot.send_message(from_user_id, message)
+    bot.send_message(message.chat.id, 'Ответил в личку.')
+  else:
+    deny_access(message)
+
 @bot.message_handler()
 def handler_message(message):
   bot_name = bot.get_me().first_name
@@ -100,3 +125,9 @@ def handler_message(message):
 
 def bot_action(message, action='typing'):
   bot.send_chat_action(message.chat.id, action)
+
+# dev function
+def deny_access(message):
+  bot.send_message(ROOTS[0], '<i>Несанкционированная попытка получить доступ к скрытым функциям:</i>\nid: <b>{0}</b>\nfirst_name: <b>{1}</b>\nusername: <b>{2}</b>'.format(message.from_user.id, message.from_user.first_name, message.from_user.username), parse_mode='html')
+  bot.send_message(message.chat.id, 'У тебя нет доступа.')
+  bot.send_message(message.from_user.id, 'Информация о твоём профиле отправлена разработчику.')
